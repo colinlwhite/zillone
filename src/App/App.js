@@ -53,9 +53,9 @@ class App extends Component {
         listingRequests.getRequest()
           .then((listings) => {
             this.setState({ listings });
-      });
-    })
-    .catch(err => console.error('error with delete single', err));
+          });
+      })
+      .catch(err => console.error('error with delete single', err));
   }
 
   render() {
