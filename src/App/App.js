@@ -5,6 +5,7 @@ import connection from '../helpers/data/connection';
 import Auth from '../components/Auth/Auth';
 import Listings from '../components/Listings/Listings';
 import MyNavbar from '../components/MyNavbar/MyNavbar';
+import listingRequests from '../helpers/data/listingRequests';
 import './App.css';
 import authRequests from '../helpers/data/authRequests';
 import Building from '../components/Building/Building';
@@ -13,10 +14,18 @@ import ListingForm from '../components/ListingForm/ListingForm';
 class App extends Component {
   state = {
     authed: false,
+    listing: [],
   }
 
   componentDidMount() {
     connection();
+
+    listingRequests.getRequest()
+      .then((listings) => {
+        this.setState({ listings });
+      })
+      .catch(err => console.error('error with listing GET', err));
+
     this.removeListener = firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.setState({
@@ -59,7 +68,7 @@ class App extends Component {
       <div className="App">
       <MyNavbar isAuthed={this.state.authed} logoutClickEvent={logoutClickEvent} />
       <div className="row">
-      <Listings />
+      <Listings listings={this.state.listings} />
        <Building />
       </div>
       <div className="row">
