@@ -61,14 +61,26 @@ class App extends Component {
   }
 
   formSubmitEvent = (newListing) => {
-    listingRequests.postRequest(newListing)
-      .then(() => {
-        listingRequests.getRequest()
-          .then((listings) => {
-            this.setState({ listings });
-          });
-      })
-      .catch(err => console.error('error with listingd post', err));
+    const { isEditing, editId } = this.props;
+    if (isEditing) {
+      listingRequests.putRequest(editId, newListing)
+        .then(() => {
+          listingRequests.getRequest()
+            .then((listings) => {
+              this.setState({ listings, isEditing: false, editId: '-1' });
+            });
+        })
+        .catch(err => console.error('error with listingd post', err));
+    } else {
+      listingRequests.postRequest(newListing)
+        .then(() => {
+          listingRequests.getRequest()
+            .then((listings) => {
+              this.setState({ listings });
+            });
+        })
+        .catch(err => console.error('error with listingd post', err));
+    }
   }
 
   passListingToEdit = listingId => this.setState({ isEditing: true, editId: listingId })
